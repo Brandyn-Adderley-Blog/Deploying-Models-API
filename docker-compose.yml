@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  web:
+
+    image: madderle/data-python-stack:latest
+    container_name: djangoweb_01
+    command: gunicorn deploy_models.wsgi:application -w 2 -b:8000
+    volumes:
+      - ./src:/home/ds
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+    expose:
+      - "8000"
+      - "8888"
