@@ -23,6 +23,9 @@ start:
 stop:
 	docker-compose stop
 
+django-dev:
+	docker-compose run -p 8000:8000 web python ./Model-Deployment/manage.py runserver 0.0.0.0:8000
+
 jupyter-web:
 	docker-compose run -p 8888:8888 web jupyter-notebook --no-browser --port 8888 --ip='*' --allow-root
 
