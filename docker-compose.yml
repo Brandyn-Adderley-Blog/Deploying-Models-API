@@ -2,7 +2,6 @@ version: '2'
 
 services:
   web:
-
     image: madderle/data-python-stack:latest
     container_name: djangoweb_01
     command: /bin/sh -c 'cd Model-Deployment && gunicorn -b:8000 deploy_models.wsgi:application -w 2'
