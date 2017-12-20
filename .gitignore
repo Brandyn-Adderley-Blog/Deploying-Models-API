@@ -4,3 +4,9 @@ src/.cache
 src/.config
 src/.ipython
 src/.local
+src/.jupyter
+src/Model-Deployment/api/__pycache__
+src/Model-Deployment/deploy_models/__pycache__/
+*.pyc
+*.sqlite3
+src/.bash_history

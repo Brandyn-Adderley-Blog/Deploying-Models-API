@@ -5,7 +5,8 @@ services:
 
     image: madderle/data-python-stack:latest
     container_name: djangoweb_01
-    command: gunicorn deploy_models.wsgi:application -w 2 -b:8000
+    command: /bin/sh -c 'cd Model-Deployment && gunicorn -b:8000 deploy_models.wsgi:application -w 2'
+
     volumes:
       - ./src:/home/ds
     ports:

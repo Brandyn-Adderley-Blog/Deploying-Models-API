@@ -5,22 +5,22 @@ import numpy as np
 import json
 from django.shortcuts import render
 from django.http import HttpResponse
-#from sklearn.externals import joblib
 
-
-# Create your views here.
-
-#Data input to run predictions on will be a json dataframe
+#Check to see if gunicorn so can slightly change the file path.
+is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
+print(is_gunicorn)
 
 #Load the model
 print(' Model being loaded....')
 filename = 'model_v2.pk'
-with open('./Model-Builds/'+filename, 'rb') as f:
-    model = pickle.load(f)
-print('Model ' + filename +  ' loaded...')
+if is_gunicorn:
+    with open('../Model-Builds/'+filename, 'rb') as f:
+        model = pickle.load(f)
+else:
+    with open('./Model-Builds/'+filename, 'rb') as f:
+        model = pickle.load(f)
 
-#Joblib way -- Doesnt work. Causes error.
-#model = joblib.load('./Model-Builds/model2.pkl')
+print('Model ' + filename +  ' loaded...')
 
 def predict(request, dataframe):
     #How to get payload from request?
@@ -33,15 +33,11 @@ def predict(request, dataframe):
     print('---------------------------------------------')
     print('Doing predictions now..')
     prediction = model.predict(data)
-    print('Predictions done...')
+    prediction_prob = model.predict_proba(data)
+
     print(prediction)
     #NP arrays cant be JSON Serialized
     list_predictions = prediction.tolist()
-
-    return HttpResponse(json.dumps(list_predictions))
-
-
-def predict_proba(request, dataframe):
-    data = pd.read_json(dataframe, orient='records')
-    prediction = model.predict_proba(data)
-    return HttpResponse(json.dumps(prediction))
+    list_predictions_prob = prediction_prob.tolist()
+    final = list(zip(list_predictions, list_predictions_prob))
+    return HttpResponse(json.dumps(final))
