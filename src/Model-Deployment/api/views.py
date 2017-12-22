@@ -23,7 +23,7 @@ else:
 print('Model ' + filename +  ' loaded...')
 
 def predict(request, dataframe):
-    #How to get payload from request?
+    #Turn payload into dataframe
     print('----------------- JSON ----------------------')
     print(dataframe)
     print('---------------------------------------------')
@@ -32,12 +32,16 @@ def predict(request, dataframe):
     print(data.info())
     print('---------------------------------------------')
     print('Doing predictions now..')
+    #Perform predictions
     prediction = model.predict(data)
     prediction_prob = model.predict_proba(data)
-
+    #Just want the probablity of class predicted
+    predict_prob_class = prediction_prob[:,0]
     print(prediction)
-    #NP arrays cant be JSON Serialized
-    list_predictions = prediction.tolist()
-    list_predictions_prob = prediction_prob.tolist()
-    final = list(zip(list_predictions, list_predictions_prob))
-    return HttpResponse(json.dumps(final))
+    #Grab index
+    index_list = data.index
+
+    #Create DataFrame
+    response_df = pd.DataFrame({"Prediction":prediction, "Probability":predict_prob_class}, index=index_list)
+    response_json = response_df.to_json()
+    return HttpResponse(response_json)
