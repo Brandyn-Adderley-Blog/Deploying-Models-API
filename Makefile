@@ -1,3 +1,4 @@
+
 create_project:
 	docker-compose run web django-admin.py startproject deploy_models ./Model-Deployment
 
